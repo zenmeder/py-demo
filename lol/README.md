@@ -1,5 +1,7 @@
 本项目的目的是爬取玩加赛事上的lol比赛数据并通过python进行分析。
+
 赛事数据存储在Mysql的lol库的games表中。
+
 建表语句为:
 create table games(
 id int(10) not null primary key auto_increment comment '主键',
