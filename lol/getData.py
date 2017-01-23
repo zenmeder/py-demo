@@ -17,9 +17,11 @@ def getTime(info):
 	pattern=re.compile(regx)
 	ma=pattern.findall(info)
 	return ma
+
 url='http://www.wanplus.com/schedule/22713.html'
 
 info=getHtml(url)
+print(info)
 print(getTeams(info))
 print(getTime(info))
 
