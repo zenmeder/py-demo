@@ -11,5 +11,6 @@ time1 varchar(15)  not null comment '第一场比赛时间',</br>
 time2 varchar(15)  comment '第二场比赛时间',</br>
 time3 varchar(15)  comment '第三场比赛时间',</br>
 time4 varchar(15)  comment '第四场比赛时间',</br>
-time5 varchar(15)  comment '第五场比赛时间'</br>
+time5 varchar(15)  comment '第五场比赛时间',</br>
+league varchar(15) not null comment '联赛名'</br>
 );
