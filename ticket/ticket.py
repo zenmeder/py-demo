@@ -60,7 +60,6 @@ class TrainInfo:
 	def pretty_print(self):
 		pt = PrettyTable()
 		pt._set_field_names(self.header)
-		# print(self.trains())
 		for item in self.trains():
 			pt.add_row(item)
 		print(pt)
@@ -72,8 +71,6 @@ def cli():
 	to_station = stations.get(arguments['<to>'])
 	date = arguments['<date>']
 	# 构建url
-	# url=("https://kyfw.12306.cn/otn/leftTicket/queryX?leftTicketDTO.train_date={}&leftTicket"
-	# 	"DTO.from_station={}&leftTicketDTO.to_station={}&purpose_codes=ADULT").format(date, from_station, to_station)
 	url="https://kyfw.12306.cn/otn/leftTicket/query?leftTicketDTO.train_date={}&leftTicketDTO.from_station={}&leftTicketDTO.to_station={}&purpose_codes=ADULT".format(date, from_station, to_station)
 	# 提交url
 	r = requests.get(url, verify=False)
