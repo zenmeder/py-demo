@@ -19,6 +19,8 @@ from docopt import docopt
 from station import stations
 import requests
 from prettytable import PrettyTable
+import json
+import logging
 
 class TrainInfo:
 	header = '车次 车站 时间 历时 一等 二等 软卧 硬卧 硬座 无座'.split()
@@ -36,24 +38,39 @@ class TrainInfo:
 		if duration.startswith('0'):
 			return duration[1:]
 		return duration
+	#获取票价
+	def get_price(self, raw_train):
+		train_no = raw_train['train_no']
+		from_station_no = raw_train['from_station_no']
+		to_station_no = raw_train['to_station_no']
+		seat_types = raw_train['seat_types']
+		train_date = raw_train['start_train_date'][0:4]+'-'+raw_train['start_train_date'][4:6]+'-'+raw_train['start_train_date'][6:8]
+		#拼装查询票价的url
+		url = "https://kyfw.12306.cn/otn/leftTicket/queryTicketPrice?train_no={}&from_station_no={}&to_station_no={}&seat_types={}&train_date={}".format(train_no, from_station_no, to_station_no, seat_types, train_date)
+		r = requests.get(url, verify = False)
+		# logging.debug(r.json())
+		return r.json()['data'] if r.json()!=-1 else {}
 
 	def trains(self):
 		for raw_train in self.available_trains:
 			raw_train = raw_train['queryLeftNewDTO']
-			train_no = raw_train['station_train_code']
-			initial = train_no[0].lower()
+			train_code = raw_train['station_train_code']
+			initial = train_code[0].lower()
+			logging.debug(raw_train)
+			logging.debug(train_code)
 			if not self.option or initial in self.option:
+				price = self.get_price(raw_train)
 				train = [
-				   train_no,
+				   train_code,
 				   '\n'.join([raw_train['from_station_name'], raw_train['to_station_name']]),
 				   '\n'.join([raw_train['start_time'],raw_train['arrive_time']]),
 				   self.get_duration(raw_train),
-				   raw_train['zy_num'],
-                   raw_train['ze_num'],
-                   raw_train['rw_num'],
-                   raw_train['yw_num'],
-                   raw_train['yz_num'],
-                   raw_train['wz_num'],
+				   '\n'.join([raw_train['zy_num'],price['A9'] if 'A9' in price.keys() else '']),
+                   '\n'.join([raw_train['ze_num'],price['O'] if 'O' in price.keys() else '']),
+                   '\n'.join([raw_train['rw_num'],price['A4'] if 'A4' in price.keys() else '']),
+                   '\n'.join([raw_train['yw_num'],price['A3'] if 'A3' in price.keys() else '']),
+                   '\n'.join([raw_train['yz_num'],price['A1'] if 'A1' in price.keys() else '']),
+                   '\n'.join([raw_train['wz_num'],price['WZ'] if 'WZ' in price.keys() else '']),
 				]
 				yield train
 
@@ -78,6 +95,11 @@ def cli():
 		key for key, value in arguments.items() if value is True
 	])
 	available_trains = r.json()['data']
+	logging.basicConfig(level=logging.DEBUG,
+                format='%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s',
+                datefmt='%a, %d %b %Y %H:%M:%S',
+                filename='myapp.log',
+                filemode='w')
 	TrainInfo(available_trains,options).pretty_print()
 
 if __name__ == '__main__':
