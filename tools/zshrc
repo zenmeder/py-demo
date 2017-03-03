@@ -51,8 +51,8 @@ ZSH_THEME="amuse"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git)
-
+plugins=(git autojump)
+[[ -s ~/.autojump/etc/profile.d/autojump.sh ]] && . ~/.autojump/etc/profile.d/autojump.sh
 source $ZSH/oh-my-zsh.sh
 
 # User configuration
@@ -91,4 +91,5 @@ alias clr="clear"
 alias getip="python  ~/GitHub/py-demo/tools/getIp.py|pbcopy|pbpaste"
 alias vzsh="subl ~/.zshrc"
 alias szsh="source ~/.zshrc"
+alias done="say 'done'"
 
