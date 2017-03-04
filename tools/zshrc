@@ -91,6 +91,5 @@ alias clr="clear"
 alias getip="python  ~/GitHub/py-demo/tools/getIp.py|pbcopy|pbpaste"
 alias vzsh="subl ~/.zshrc"
 alias szsh="source ~/.zshrc"
-
 alias done="say 'done'"
 
